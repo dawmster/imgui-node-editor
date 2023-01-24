@@ -135,7 +135,7 @@ private:
 };
 
 Action::Action(string_view name, OnTriggeredEvent::Delegate delegate)
-    : m_Name(name.to_string())
+    : m_Name(string(name))
 {
     if (delegate)
         OnTriggered += std::move(delegate);
@@ -146,7 +146,7 @@ void Action::SetName(string_view name)
     if (m_Name == name)
         return;
 
-    m_Name = name.to_string();
+    m_Name = string(name);
 
     OnChange(this);
 }
@@ -1157,7 +1157,7 @@ private:
         LOGI("[File] Open \"%" PRI_sv "\"", FMT_sv(path));
 
         auto mostRecentlyOpenFiles = Application_GetMostRecentlyOpenFileList();
-        mostRecentlyOpenFiles.Add(path.to_string());
+        mostRecentlyOpenFiles.Add(string(path));
 
         document->SetPath(path);
 

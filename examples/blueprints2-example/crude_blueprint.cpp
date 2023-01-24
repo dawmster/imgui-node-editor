@@ -24,7 +24,7 @@ namespace crude_blueprint { namespace detail {
 template <typename T>
 inline bool GetPtrTo(const crude_json::value& value, string_view key, const T*& result)
 {
-    auto keyString = key.to_string();
+    auto keyString = string(key);
     if (!value.contains(keyString))
         return false;
 
@@ -278,7 +278,7 @@ void crude_blueprint::Pin::Save(crude_json::value& value) const
 {
     value["id"] = crude_json::number(m_Id); // required
     if (!m_Name.empty())
-        value["name"] = m_Name.to_string();  // optional, to make data readable for humans
+        value["name"] = string(m_Name);  // optional, to make data readable for humans
     if (m_Link)
         value["link"] = crude_json::number(m_Link->m_Id);
 }
@@ -568,7 +568,7 @@ bool crude_blueprint::Node::Load(const crude_json::value& value)
 void crude_blueprint::Node::Save(crude_json::value& value) const
 {
     value["id"] = crude_json::number(m_Id); // required
-    value["name"] = GetName().to_string(); // optional, to make data readable for humans
+    value["name"] = string(GetName()); // optional, to make data readable for humans
 
     auto& inputPinsValue = value["input_pins"]; // optional
     for (auto& pin : const_cast<Node*>(this)->GetInputPins())
@@ -851,7 +851,7 @@ uint32_t crude_blueprint::NodeRegistry::RegisterNodeType(string_view name, NodeT
 
     NodeTypeInfo typeInfo;
     typeInfo.m_Id       = id;
-    typeInfo.m_Name     = name.to_string();
+    typeInfo.m_Name     = string(name);
     typeInfo.m_Factory  = factory;
 
     m_CustomNodes.push_back(std::move(typeInfo));
@@ -1292,7 +1292,7 @@ void crude_blueprint::Blueprint::Save(crude_json::value& value) const
         crude_json::value nodeValue;
 
         nodeValue["type_id"] = crude_json::number(node->GetTypeInfo().m_Id); // required
-        nodeValue["type_name"] = node->GetTypeInfo().m_Name.to_string(); // optional, to make data readable for humans
+        nodeValue["type_name"] = string(node->GetTypeInfo().m_Name); // optional, to make data readable for humans
 
         node->Save(nodeValue);
 
@@ -1305,7 +1305,7 @@ void crude_blueprint::Blueprint::Save(crude_json::value& value) const
 
 bool crude_blueprint::Blueprint::Load(string_view path)
 {
-    auto value = crude_json::value::load(path.to_string());
+    auto value = crude_json::value::load(string(path));
     if (!value.second)
         return false;
 
@@ -1317,7 +1317,7 @@ bool crude_blueprint::Blueprint::Save(string_view path) const
     crude_json::value value;
     Save(value);
 
-    return value.save(path.to_string(), 4);
+    return value.save(string(path), 4);
 }
 
 uint32_t crude_blueprint::Blueprint::MakeNodeId(Node* node)

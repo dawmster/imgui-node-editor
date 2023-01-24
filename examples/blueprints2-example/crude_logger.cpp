@@ -195,7 +195,7 @@ void crude_logger::OverlayLogger::Draw(const ImVec2& a, const ImVec2& b)
 
 void crude_logger::OverlayLogger::AddKeyword(string_view keyword)
 {
-    m_Keywords.push_back(keyword.to_string());
+    m_Keywords.push_back(string(keyword));
 }
 
 void crude_logger::OverlayLogger::RemoveKeyword(string_view keyword)

@@ -588,7 +588,7 @@ void blueprint_editor_utilities::CreateNodeDialog::Show(Document& document)
     for (auto nodeTypeInfo : m_SortedNodes)
     {
         bool selected = false;
-        if (ImGui::Selectable(nodeTypeInfo->m_DisplayName.to_string().c_str(), &selected))
+        if (ImGui::Selectable(nodeTypeInfo->m_DisplayName.data(), &selected))
         {
             auto transaction = document.BeginUndoTransaction("CreateNodeDialog");
 

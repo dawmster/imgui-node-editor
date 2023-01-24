@@ -117,7 +117,7 @@ struct LinkQueryResult
 {
     LinkQueryResult(bool result, string_view reason = "")
         : m_Result(result)
-        , m_Reason(reason.to_string())
+        , m_Reason(string(reason))
     {
     }
 

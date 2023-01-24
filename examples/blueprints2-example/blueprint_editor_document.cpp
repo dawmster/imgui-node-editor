@@ -77,7 +77,7 @@ bool blueprint_editor::Document::DocumentState::Deserialize(const crude_json::va
 
 
 blueprint_editor::Document::UndoTransaction::UndoTransaction(Document& document, string_view name)
-    : m_Name(name.to_string())
+    : m_Name(string(name))
     , m_Document(&document)
 {
 }
@@ -162,7 +162,7 @@ void blueprint_editor::Document::UndoTransaction::Commit(string_view name)
 
             LOGV("[UndoTransaction] Commit: %" PRI_sv, FMT_sv(name));
 
-            m_State.m_Name = name.to_string();
+            m_State.m_Name = string(name);
 
             m_Document->m_Undo.emplace_back(std::move(m_State));
             m_Document->m_Redo.clear();
@@ -263,13 +263,13 @@ blueprint_editor::shared_ptr<blueprint_editor::Document::UndoTransaction> bluepr
 
 void blueprint_editor::Document::SetPath(string_view path)
 {
-    m_Path = path.to_string();
+    m_Path = string(path);
 
     auto lastSeparator = m_Path.find_last_of("\\/");
     if (lastSeparator != string::npos)
         m_Name = m_Path.substr(lastSeparator + 1);
     else
-        m_Name = path.to_string();
+        m_Name = string(path);
 }
 
 crude_json::value blueprint_editor::Document::Serialize() const
@@ -307,7 +307,7 @@ bool blueprint_editor::Document::Deserialize(const crude_json::value& value, Doc
 
 bool blueprint_editor::Document::Load(string_view path)
 {
-    auto loadResult = crude_json::value::load(path.to_string());
+    auto loadResult = crude_json::value::load(string(path));
     if (!loadResult.second)
         return false;
 
@@ -323,7 +323,7 @@ bool blueprint_editor::Document::Load(string_view path)
 bool blueprint_editor::Document::Save(string_view path) const
 {
     auto result = Serialize();
-    return result.save(path.to_string());
+    return result.save(string(path));
 }
 
 bool blueprint_editor::Document::Undo()
