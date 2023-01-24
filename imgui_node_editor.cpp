@@ -3386,19 +3386,34 @@ void ed::FlowAnimationController::Release(FlowAnimation* animation)
     IM_UNUSED(animation);
 }
 
-
+#include <array>
 
 //------------------------------------------------------------------------------
 //
 // Navigate Action
 //
 //------------------------------------------------------------------------------
-const float ed::NavigateAction::s_DefaultZoomLevels[] =
+template<std::size_t N> std::array<float, N + 1> constexpr make_array()
 {
-    0.1f, 0.15f, 0.20f, 0.25f, 0.33f, 0.5f, 0.75f, 1.0f, 1.25f, 1.50f, 2.0f, 2.5f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f
-};
+    std::array<float, N + 1> tempArray{};
+    float count = 0.1;
+    for(float &elem:tempArray)
+    {
+        elem = count + count*0.0125;
+        count = elem;
+    }
+    return tempArray;
+}
 
-const int ed::NavigateAction::s_DefaultZoomLevelCount = sizeof(s_DefaultZoomLevels) / sizeof(*s_DefaultZoomLevels);
+auto ma=make_array<360>();
+const float *ed::NavigateAction::s_DefaultZoomLevels = &ma[0];
+// const float ed::NavigateAction::s_DefaultZoomLevels[] =
+// {
+//     0.1f, 0.15f, 0.20f, 0.25f, 0.33f, 0.5f, 0.75f, 1.0f, 1.25f, 1.50f, 2.0f, 2.5f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f
+// };
+
+const int ed::NavigateAction::s_DefaultZoomLevelCount = 360;
+// const int ed::NavigateAction::s_DefaultZoomLevelCount = sizeof(s_DefaultZoomLevels) / sizeof(*s_DefaultZoomLevels);
 
 ed::NavigateAction::NavigateAction(EditorContext* editor, ImGuiEx::Canvas& canvas):
     EditorAction(editor),
@@ -3797,8 +3812,8 @@ float ed::NavigateAction::MatchZoom(int steps, float fallbackZoom)
         return fallbackZoom;
 
     auto currentZoom = m_ZoomLevels[currentZoomIndex];
-    if (fabsf(currentZoom - m_Zoom) > 0.001f)
-        return currentZoom;
+    // if (fabsf(currentZoom - m_Zoom) > 0.001f)
+        // return currentZoom;
 
     auto newIndex = currentZoomIndex + steps;
     if (newIndex >= 0 && newIndex < m_ZoomLevelCount)

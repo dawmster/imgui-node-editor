@@ -1029,7 +1029,8 @@ private:
     float MatchZoom(int steps, float fallbackZoom);
     int MatchZoomIndex(int direction);
 
-    static const float s_DefaultZoomLevels[];
+    static const float *s_DefaultZoomLevels;
+    // static const float s_DefaultZoomLevels[];
     static const int   s_DefaultZoomLevelCount;
 };
 
